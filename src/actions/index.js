@@ -1,10 +1,24 @@
-// import _ from 'lodash';
+import _ from 'lodash';
 import jsonPlaceholder from "../apis/jsonPlaceholder";
 
-export const fetchPostsAndUsers = () => async dispatch => {
-  console.log('about to fetch posts')
+export const fetchPostsAndUsers = () => async (dispatch, getState) => {
   await dispatch(fetchPosts());
-  console.log('fetched posts!')
+
+  // const userIds = _.uniq(_.map(getState().posts, 'userId'))
+  // userIds.forEach(id => dispatch(fetchUser(id)));
+
+  _.chain(getState().posts)
+   .map('userId')
+   .uniq()
+   .forEach(id =>dispatch(fetchUser(id)))
+   .value();
+
+  // console.log(userIds);
+  // console.log(getState().posts);
+  // console.log('fetched posts!')
+  // *** if you needed to run another fucntion depenedent on the return
+  // *** something like this
+  // await Promise.all(userIds.map(id => dispatch(fetchUser(id))));
 
 }
 
